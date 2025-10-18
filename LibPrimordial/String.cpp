@@ -99,7 +99,7 @@ SIG bool Seek(String str, char c, u64* output)
         if(str.ptr[i] == c)
         {
             result = true;
-            if(*output)
+            if(output)
             {
                 *output = i;
             }

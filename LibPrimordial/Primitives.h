@@ -113,8 +113,3 @@ constexpr f64 F64_MAX = 1.7976931348623157E+308;
 
 #include "Azewin.h"
 
-
-#include "Basic.cpp"
-#include "String.cpp"
-#include "Arena.cpp"
-#include "OS.h"
