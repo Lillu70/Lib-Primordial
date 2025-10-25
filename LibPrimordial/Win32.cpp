@@ -25,7 +25,7 @@ SIG f64 OS_Time()
 }
 
 
-String OS_Read_Entire_File(String path, Arena* arena)
+SIG String OS_Read_Entire_File(String path, Arena* arena)
 {
     // TODO: Test with a file bigger than 4 Gigabytes.
     // Windows expects a null terminated buffer. Strings as they are slices; don't have that quarentee.

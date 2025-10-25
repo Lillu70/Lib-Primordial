@@ -33,18 +33,14 @@ SIG String To_String(char* cstr)
 
 SIG char Last(String str)
 {
-    Assert(str.length);
-
-    char last = str.ptr[str.length - 1];
+    char last = (str.length)? str.ptr[str.length - 1] : -1;
     return last;
 }
 
 
 SIG char First(String str)
 {
-    Assert(str.length);
-    
-    char first = str.ptr[0];
+    char first = (str.length)? str.ptr[0] : -1;
     return first;
 }
 
@@ -111,6 +107,29 @@ SIG bool Seek(String str, char c, u64* output)
 }
 
 
+// Keep seeking till the check_fn returns true.
+SIG bool Seek(String str, bool(*check_fn)(char), u64* output)
+{
+    Assert(check_fn);
+
+    bool result = false;
+    for(u64 i = 0; i < str.length; ++i)
+    {
+        if(check_fn(str.ptr[i]))
+        {
+            result = true;
+            if(output)
+            {
+                *output = i;
+            }
+            break;
+        }
+    }
+
+    return result;
+}
+
+
 SIG u64 Line_Length(String str)
 {
     u64 result = str.length;
@@ -121,9 +140,9 @@ SIG u64 Line_Length(String str)
 
 SIG String Forward(String str, u64 step)
 {
-    Assert(step < str.length);
-    
+    step = Min(step, str.length);
     String result = {str.ptr + step, str.length - step};
+    
     return result;
 }
 
