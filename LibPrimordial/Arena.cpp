@@ -16,7 +16,7 @@ struct Arena
 };
 
 #define Push_Struct(ARENA, TYPE) (TYPE*)Push(ARENA, sizeof(TYPE))
-#define Push_Array(ARENA, TYPE, COUNT) (TYPE*)Push(ARENA, sizeof(TYPE) * COUNT)
+#define Push_Array(ARENA, TYPE, COUNT) (TYPE*)Push(ARENA, sizeof(TYPE) * (COUNT))
 
 SIG void Initialize_Arena(Arena* arena, u64 reserve_byte_count DEF(Gigabytes(64)), u64 pages_per_commit DEF(16))
 {
