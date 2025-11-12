@@ -42,6 +42,9 @@ SIG void Clear(Arena* arena)
 
 SIG void* Push(Arena* arena, u64 size)
 {
+    Assert(arena->memory);
+    Assert(arena->reserved);
+
     if(arena->used + size > arena->commited)
     {
         u64 page = Kilobytes(4);

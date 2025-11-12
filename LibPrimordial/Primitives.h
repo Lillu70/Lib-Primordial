@@ -12,6 +12,7 @@
 
 #define _inline __forceinline
 #define Array_Length(array) (sizeof(array) / sizeof(array[0]))
+#define Offset_Of(TYPE, MEMBER) u64(&((TYPE*)0)->MEMBER)
 
 #define WELD(A, B) A##B
 #define PASTE(name) name
@@ -19,29 +20,27 @@
 #define local_storage static
 
 #ifdef SLOW
+	#ifndef Assert
+		#define Assert(X) if(!(X)) *((s32*)0) = 666 
 
-#ifndef Assert
-	#define Assert(X) if(!(X)) *((s32*)0) = 666 
+	#endif
 
-#endif
+	#ifndef Terminate
+		#define Terminate(X) *((s32*)0) = 666 
 
-#ifndef Terminate
-	#define Terminate(X) *((s32*)0) = 666 
-
-#endif
+	#endif
 
 #else
 
-#ifndef Assert
-	#define Assert(X) 
+	#ifndef Assert
+		#define Assert(X) 
 
-#endif
+	#endif
 
-#ifndef Terminate
-	#define Terminate(X)
+	#ifndef Terminate
+		#define Terminate(X)
 
-#endif
-
+	#endif
 #endif
 
 
@@ -113,9 +112,3 @@ constexpr f64 F64_MAX = 1.7976931348623157E+308;
 #endif
 
 #include "Azewin.h"
-
-
-#include "Basic.cpp"
-#include "String.cpp"
-#include "Arena.cpp"
-#include "OS.h"
