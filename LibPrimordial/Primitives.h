@@ -19,6 +19,10 @@
 #define PASTE_AS_CSTRING(name) #name
 #define local_storage static
 
+#define VARNAME(XXX) WELD(LOOPITER, XXX)
+#define LOOP(COUNT) for(u64 VARNAME(__LINE__) = 0; VARNAME(__LINE__) < (COUNT); VARNAME(__LINE__) += 1)
+
+
 #ifdef SLOW
 	#ifndef Assert
 		#define Assert(X) if(!(X)) *((s32*)0) = 666 
