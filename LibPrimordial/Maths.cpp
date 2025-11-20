@@ -38,3 +38,22 @@ SIG f32 Square_Root(f32 v)
 }
 
 #endif
+
+
+SIG u32 Random_PCG(u32 seed) 
+{
+    u32 word = ((seed >> ((seed >> 28u) + 4u)) ^ seed) * 277803737u;
+    u32 result = (word >> 22u) ^ word;
+    return result;
+}
+
+
+SIG u32 Random_PCG(u32* pcg_state) 
+{
+    Assert(pcg_state);
+
+    u32 state = *pcg_state;
+    *pcg_state = *pcg_state * 747796405u + 2891336453u;
+    u32 result = Random_PCG(state);
+    return result;
+}

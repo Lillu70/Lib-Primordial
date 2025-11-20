@@ -48,3 +48,10 @@ SIG void Mem_Copy(void* dest, void* src, u64 count)
         *a = *b;
     }
 }
+
+
+SIG u64 Weld(u32 a, u32 b)
+{
+    u64 result = (u64(a) << 32) | (b);
+    return result;
+}

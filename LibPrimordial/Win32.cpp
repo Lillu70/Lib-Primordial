@@ -161,4 +161,11 @@ SIG bool OS_Write_File(String output, String path, Arena* arena)
 }
 
 
+SIG void* OS_Get_Executable_Base_Address()
+{
+    WModuleHandle module = GetModuleHandleA(0);
+    return module;
+}
+
+
 #endif

@@ -55,6 +55,7 @@ SIG Arena Create_Arena(u64 reserve_byte_count DEF(Gigabytes(64)), u64 pages_per_
 
 SIG void Clear(Arena* arena)
 {
+    Mem_Zero(arena->memory, arena->used);
     arena->used = 0;
 }
 
