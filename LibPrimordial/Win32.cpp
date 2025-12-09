@@ -6,7 +6,6 @@
 
 #if _WIN32
 
-
 u64 Win_Performance_Frequency()
 {
     u64 result;
@@ -17,7 +16,7 @@ u64 Win_Performance_Frequency()
 
 SIG f64 OS_Time()
 {
-    static f64 freq = f64(Win_Performance_Frequency());
+    local_storage f64 freq = f64(Win_Performance_Frequency());
     u64 v;
     QueryPerformanceCounter(&v);
     f64 result = f64(v) / freq;
@@ -25,7 +24,17 @@ SIG f64 OS_Time()
 }
 
 
-SIG String OS_Read_Entire_File(String path, Arena* arena)
+SIG void OS_Sleep(f64 seconds)
+{
+    u32 milliseconds = u32(seconds * 1000.0 + 0.5);
+    if(milliseconds)
+    {
+        Sleep(milliseconds);
+    }
+}
+
+
+SIG String OS_Read_File(String path, Arena* arena)
 {
     // TODO: Test with a file bigger than 4 Gigabytes.
     // Windows expects a null terminated buffer. Strings as they are slices; don't have that quarentee.
@@ -99,7 +108,7 @@ SIG String OS_Read_Entire_File(String path, Arena* arena)
 }
 
 
-SIG bool OS_Write_File(String output, String path, Arena* arena)
+SIG bool OS_Write_File(String buffer, String path, Arena* arena)
 {
     // TODO: Test with a file bigger than 4 Gigabytes.
     // Windows expects a null terminated buffer. Strings as they are slices; don't have that quarentee.
@@ -127,8 +136,8 @@ SIG bool OS_Write_File(String output, String path, Arena* arena)
 
     if(file_handle != INVALID_HANDLE_VALUE)
     {
-        u64 fz = output.length;
-        char* buffer = output.ptr;
+        u64 fz = buffer.length;
+        char* buffer_ptr = buffer.ptr;
 
         while(fz)
         {
@@ -138,7 +147,7 @@ SIG bool OS_Write_File(String output, String path, Arena* arena)
             b32 success = WriteFile
             (
                 file_handle, 
-                buffer, 
+                buffer_ptr, 
                 number_of_bytes_to_write, 
                 &number_of_bytes_written, 
                 0
@@ -150,8 +159,8 @@ SIG bool OS_Write_File(String output, String path, Arena* arena)
                 break;
             }
 
-            fz      -= number_of_bytes_written;
-            buffer  += number_of_bytes_written;
+            fz -= number_of_bytes_written;
+            buffer_ptr += number_of_bytes_written;
         }
 
         CloseHandle(file_handle);

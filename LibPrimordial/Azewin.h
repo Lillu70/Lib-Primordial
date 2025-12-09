@@ -403,6 +403,22 @@ extern "C" __declspec(dllimport) u32 __stdcall GetModuleFileNameA(WModuleHandle 
 #endif
 
 
+// --- Sleep import
+// Source: Kernel32
+#if AZEWIN_COMPILE_KERNEL32 || AZEWIN_DEFAULT_COMPILE || 0
+/*
+    Suspends the execution of the current thread until the time-out interval elapses.
+    To enter an alertable wait state, use the SleepEx function.
+
+    VOID Sleep(
+      [in] DWORD dwMilliseconds
+    );
+
+    https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
+*/
+extern "C" __declspec(dllimport) void __stdcall Sleep(u32 milliseconds);
+#endif
+
 
 // --- CreateThread import
 // Source: Kernel32

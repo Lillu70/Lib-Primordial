@@ -22,6 +22,13 @@ struct Arena_Snapshot
 };
 
 
+enum class Zero_Memory : u8
+{
+    no,
+    yes
+};
+
+
 #define Push_Struct(ARENA, TYPE) (TYPE*)Push(ARENA, sizeof(TYPE))
 #define Push_Array(ARENA, TYPE, COUNT) (TYPE*)Push(ARENA, sizeof(TYPE) * (COUNT))
 
@@ -53,9 +60,13 @@ SIG Arena Create_Arena(u64 reserve_byte_count DEF(Gigabytes(64)), u64 pages_per_
 }
 
 
-SIG void Clear(Arena* arena)
+SIG void Clear(Arena* arena, Zero_Memory zero_memory)
 {
-    Mem_Zero(arena->memory, arena->used);
+    if(zero_memory == Zero_Memory::yes)
+    {
+        Mem_Zero(arena->memory, arena->used);
+    }
+
     arena->used = 0;
 }
 
@@ -74,7 +85,8 @@ SIG void* Push(Arena* arena, u64 size)
         {
             extra = (size / page + 1) * page;
         }
-        
+        Assert(extra >= size);
+
         arena->commited += extra;
         
         if(arena->commited <= arena->reserved)
@@ -103,6 +115,16 @@ SIG void* Push(Arena* arena, u64 size)
 }
 
 
+SIG char* Push_String(Arena* arena, String str, u64* out_length)
+{
+    char* ptr = (char*)Push(arena, str.length);
+    Mem_Copy(ptr, str.ptr, str.length);
+    *out_length += str.length;
+    
+    return ptr;
+}
+
+
 SIG char* Push_String(Arena* arena, String str)
 {
     char* ptr = (char*)Push(arena, str.length);
@@ -125,8 +147,16 @@ SIG void Restore(Arena* arena, Arena_Snapshot snapshot)
     arena->used = snapshot.position;
 }
 
+
 SIG bool Is_Taken(Arena_Snapshot snapshot)
 {
     bool result = snapshot.position > 0;
     return result;
+}
+
+
+SIG String To_String(Arena* arena)
+{
+    String str = {(char*)arena->memory, arena->used};
+    return str;
 }

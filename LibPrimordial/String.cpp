@@ -14,7 +14,7 @@ struct String
 
 
 // The null terminator is inclusive. This is usefull for copying.
-SIG u64 Null_Terminated_Lenght(char* buffer)
+SIG u64 Null_Terminated_Length(char* buffer)
 {
     u64 i;
     for(i = 0; *(buffer + i); ++i);
@@ -26,7 +26,7 @@ SIG u64 Null_Terminated_Lenght(char* buffer)
 SIG String To_String(char* cstr)
 {
     String result = {cstr};
-    result.length = Null_Terminated_Lenght(cstr) - 1;
+    result.length = Null_Terminated_Length(cstr) - 1;
     return result;
 }
 
@@ -42,6 +42,18 @@ SIG char First(String str)
 {
     char first = (str.length)? str.ptr[0] : -1;
     return first;
+}
+
+
+SIG char At(String str, u64 idx)
+{
+    char result = 0;
+    if(str.ptr && idx < str.length)
+    {
+        result = str.ptr[idx];
+    }
+
+    return result;
 }
 
 
@@ -161,6 +173,22 @@ SIG bool Is_Integer(char c)
 }
 
 
+SIG bool Not_Integer(char c)
+{
+    bool result = !Is_Integer(c);
+    return result;
+}
+
+
+SIG String Skip_Zeroes(String str)
+{
+    u64 i;
+    for(i = 0; i < str.length && (*(str.ptr + i)) == '0'; ++i);
+    String result = {str.ptr + i, str.length - i};
+    return result;
+}
+
+
 SIG bool Is_Positive_Integer(String str)
 {
     bool result = str.length && str.ptr;
@@ -173,15 +201,6 @@ SIG bool Is_Positive_Integer(String str)
         result = Is_Integer(*c);
     }
     
-    return result;
-}
-
-
-SIG String Skip_Zeroes(String str)
-{
-    u64 i;
-    for(i = 0; i < str.length && (*(str.ptr + i)) == '0'; ++i);
-    String result = {str.ptr + i, str.length - i};
     return result;
 }
 
@@ -368,8 +387,8 @@ SIG String To_String(u64 integer, U64_To_String_Memory* output)
 {
     u64 ascii_numeric_offset = 48;
     
+    *output = {};
     char* buffer = (char*)&output->b;
-    Mem_Zero(buffer, Array_Length(buffer));
 
     buffer[Array_Length(output->b) - 1] = 0;
     u32 last_non_zero = Array_Length(output->b) - 2;
